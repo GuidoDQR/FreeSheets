@@ -3,6 +3,7 @@ let groupRow = document.getElementsByClassName("group-row");
 let contextMenu = document.getElementById("contextMenu");
 let input = document.getElementById("textInput");
 let cell;
+let cellTextValue="";
 
 createGrid();
 
@@ -16,8 +17,8 @@ function createGrid(){
         groupRow[0].appendChild(newDiv);
     }
     
-    for(let i=1; i<10; i++){
-        
+    for(let i=1; i<100; i++){
+
         //atributes
         const idAttribute = document.createAttribute("id");
 
@@ -40,7 +41,7 @@ function createGrid(){
     
         for(let j=0; j<26; j++){
             
-            const newDiv = document.createElement("div");
+            const newDiv = document.createElement("label");
             newDiv.className = "cell";
             idAttribute.value = i + String.fromCharCode(65+j);
             columnAttribute.value = String.fromCharCode(65+j);
@@ -53,33 +54,31 @@ function createGrid(){
     }
     
     cell = document.getElementById("1A");
+    cell.style.borderColor = "red";
     // input.id = cell.id;
     console.log(cell.textContent);
 }
 
-// groupCell.addEventListener("mouseover", setMenu);
-// groupCell.addEventListener("mouseout", exitMenu);
 groupCell.addEventListener("click", getElementByClick);
 document.addEventListener("keyup", write);
 
 function write(){
-    console.log("pase");
+    console.log("escribir");
     cell.textContent = input.value;
 }
 
 function getElementByClick(e){
+    if(cell != null){
+        cell.style.borderColor = "gray";
+    }
+
     cell = e.target || e.srcElement;  
     console.log(cell);
     let cellClicked = document.createElement("span");
     cell.appendChild(cellClicked);
-    // cell.textContent = "hola";
+    cell.style.borderColor = "red";
     input.value = cell.textContent;
-    // console.log(cell.textContent);
-    console.log(input.textContent);
-}
 
-function clickCell(){
-    console.log("click");
 }
 
 function hideMenu() {
@@ -93,17 +92,6 @@ document.onclick = hideMenu;
 document.oncontextmenu = normalClick;
 
 contextMenu.oncontextmenu = rightClick;
-
-// console.log(document.oncontextmenu);
-// console.log(groupCell.oncontextmenu);
-
-function setMenu(){
-    console.log("entre");
-}
-
-function exitMenu(){
-    console.log("sali");
-}
 
 function normalClick(){
     if(!isActiveMenu){
@@ -121,5 +109,28 @@ function rightClick(e){
     menu.style.display = 'block';
     menu.style.left = e.pageX + "px";
     menu.style.top = e.pageY + "px";
-    
 }
+
+
+function copy(){
+    console.log("copiar");
+    cellTextValue = cell.textContent;
+    console.log(cellTextValue);
+}
+
+function paste(){
+    cell.textContent = cellTextValue;
+    input.value = cell.textContent;
+    console.log("pegar");
+}
+
+function cut(){
+    cellTextValue = cell.textContent;
+    cell.textContent = "";
+    input.value = "";
+    console.log("cortar");
+}
+
+contextMenu.children[0].children[0].addEventListener("click",copy);
+contextMenu.children[0].children[1].addEventListener("click",paste);
+contextMenu.children[0].children[2].addEventListener("click",cut);
